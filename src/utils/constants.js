@@ -38,6 +38,8 @@ const STANDARD_LAYOUT = [
   MEMORY_ROW,
   [
     { type: "action", label: "%", value: "percent" },
+    { type: "action", label: "(", value: "(" },
+    { type: "action", label: ")", value: ")" },
     { type: "action", label: "CE", value: "clear-entry" },
     { type: "action", label: "C", value: "clear-expression" },
     { type: "action", label: "⌫", value: "delete" },

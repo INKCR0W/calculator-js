@@ -363,6 +363,8 @@ button {
   flex: 1;
   overflow-y: auto;
   padding-right: 6px;
+  max-height: 600px;
+  min-height: 200px;
 }
 
 .history-empty {
