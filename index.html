@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>网页计算器</title>
+    <link rel="stylesheet" href="./src/styles/main.css" />
+    <link rel="stylesheet" href="./src/styles/themes.css" />
+    <link rel="stylesheet" href="./src/styles/responsive.css" />
+  </head>
+  <body>
+    <main class="calc-shell" aria-label="计算器">
+      <section class="calc-main">
+        <header class="command-bar">
+          <div class="command-bar__left">
+            <div class="command-bar__titles">
+              <div class="command-title" data-role="mode-label">标准</div>
+            </div>
+          </div>
+          <div class="command-bar__right">
+            <div data-component="mode-toggle" class="toolbar-slot"></div>
+            <div data-component="angle-toggle" class="toolbar-slot"></div>
+            <div data-component="theme-toggle" class="toolbar-slot"></div>
+          </div>
+        </header>
+
+        <section class="display-panel" data-component="display">
+          <div
+            class="display-expression"
+            data-role="expression"
+            aria-live="polite"
+            contenteditable="true"
+            spellcheck="false"
+          ></div>
+          <div class="display-result" data-role="result" aria-live="polite"></div>
+          <div class="display-error" data-role="error" aria-live="assertive"></div>
+        </section>
+
+        <section class="keyboard-panel" aria-label="计算器按键区域">
+          <div class="memory-state" data-role="memory-indicator">内存：空</div>
+          <div data-component="keyboard"></div>
+        </section>
+      </section>
+
+      <aside class="history-panel" aria-label="历史记录">
+        <header class="history-header">
+          <div>
+            <div class="history-title">历史记录</div>
+          </div>
+          <div class="history-actions">
+            <button type="button" class="history-btn" data-action="export-data">导出</button>
+            <button type="button" class="history-btn" data-action="import-data">导入</button>
+            <button type="button" class="history-btn history-btn--danger" data-action="clear-history">清空</button>
+          </div>
+        </header>
+        <div data-component="history" class="history-list-wrap"></div>
+      </aside>
+    </main>
+
+    <script type="module" src="./src/app.js"></script>
+  </body>
+</html>

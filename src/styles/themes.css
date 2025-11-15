@@ -1,0 +1,31 @@
+/* 主题切换：默认暗色，亮色模式通过 data-theme="light" 设置 */
+
+:root[data-theme="light"] {
+  --bg-body: #e8ecf6;
+  --bg-window: #ffffff;
+  --bg-surface: #f7f8fb;
+  --bg-surface-raised: #eef1f7;
+  --bg-display: #fdfdff;
+  --key-neutral: #eceff5;
+  --key-neutral-hover: #e4e8f1;
+  --key-function: #dfe3ef;
+  --key-memory: #f1f3f9;
+  --key-operator: #d7dcec;
+  --key-danger: #f6dfe3;
+  --key-accent: #5b6bdf;
+  --text-strong: #1f2433;
+  --text-normal: #2b3144;
+  --text-muted: #5d6276;
+  --divider: rgba(31, 36, 51, 0.08);
+  --history-border: rgba(31, 36, 51, 0.08);
+  --danger: #c43333;
+  --shadow-main: 0 28px 80px rgba(26, 39, 89, 0.15);
+}
+
+:root[data-theme="light"] body {
+  background: radial-gradient(circle at top, #ffffff 0%, #cfd6f3 60%);
+}
+
+:root[data-theme="light"] .calc-shell {
+  border: 1px solid rgba(31, 36, 51, 0.08);
+}
