@@ -1,0 +1,18 @@
+{
+  "name": "calculator",
+  "version": "1.0.0",
+  "description": "一个功能完善、架构优雅的现代化网页计算器，采用原生 JavaScript 实现，支持基础运算、科学计算、历史记录等多种功能。",
+  "main": "index.html",
+  "scripts": {
+    "test": "vitest run"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "decimal.js": "^10.6.0"
+  },
+  "devDependencies": {
+    "vitest": "^1.4.0"
+  }
+}
