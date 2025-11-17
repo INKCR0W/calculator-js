@@ -2,12 +2,24 @@ import { STORAGE_KEYS, DEFAULT_PREFERENCES, THEMES } from "../utils/constants.js
 import { formatExpression } from "../utils/formatters.js";
 import { isValidExpression } from "../utils/validators.js";
 
+/**
+ * 默认导入限制配置
+ * @type {Object}
+ * @property {number} maxPayloadBytes - 最大载荷字节数
+ * @property {number} maxHistoryEntries - 最大历史记录条目数
+ * @property {number} maxPrecision - 最大精度
+ */
 const DEFAULT_IMPORT_LIMITS = {
   maxPayloadBytes: 200 * 1024, // 200 KB
   maxHistoryEntries: 500,
   maxPrecision: 100,
 };
 
+/**
+ * 计算字符串的字节长度
+ * @param {string} raw - 原始字符串
+ * @returns {number} 字节长度
+ */
 function computeByteLength(raw) {
   if (typeof raw !== "string") return 0;
   if (typeof TextEncoder !== "undefined") {
@@ -19,7 +31,24 @@ function computeByteLength(raw) {
   return raw.length * 2; // 估算 UTF-16
 }
 
+/**
+ * ImportExportService类 - 导入导出服务
+ * 
+ * @class ImportExportService
+ * @property {HistoryManager} historyManager - 历史记录管理器实例
+ * @property {PreferencesManager} preferencesManager - 偏好管理器实例
+ * @property {StorageService} storage - 存储服务实例
+ * @property {Object} limits - 导入限制配置
+ */
 export class ImportExportService {
+  /**
+   * 创建ImportExportService实例
+   * @param {Object} [options] - 配置选项
+   * @param {HistoryManager} [options.historyManager] - 历史记录管理器实例
+   * @param {PreferencesManager} [options.preferencesManager] - 偏好管理器实例
+   * @param {StorageService} [options.storage] - 存储服务实例
+   * @param {Object} [options.limits] - 导入限制配置
+   */
   constructor({ historyManager, preferencesManager, storage, limits } = {}) {
     this.historyManager = historyManager;
     this.preferencesManager = preferencesManager;
@@ -27,6 +56,10 @@ export class ImportExportService {
     this.limits = { ...DEFAULT_IMPORT_LIMITS, ...limits };
   }
 
+  /**
+   * 创建导出数据载荷
+   * @returns {Object} 导出数据载荷
+   */
   createExportPayload() {
     if (!this.historyManager || !this.preferencesManager || !this.storage) {
       throw new Error("ImportExportService 缺少必要依赖");
@@ -38,10 +71,19 @@ export class ImportExportService {
     };
   }
 
+  /**
+   * 创建导出JSON数据
+   * @returns {string} JSON格式的导出数据
+   */
   createExportJson() {
     return JSON.stringify(this.createExportPayload(), null, 2);
   }
 
+  /**
+   * 从JSON应用导入数据
+   * @param {string} rawJson - JSON格式的导入数据
+   * @returns {Object} 导入结果摘要
+   */
   applyImportFromJson(rawJson) {
     if (!this.historyManager || !this.preferencesManager || !this.storage) {
       throw new Error("ImportExportService 缺少必要依赖");
@@ -74,6 +116,11 @@ export class ImportExportService {
     return summary;
   }
 
+  /**
+   * 解析导入数据载荷
+   * @param {string} rawJson - JSON格式的导入数据
+   * @returns {Object} 解析后的数据载荷
+   */
   parseImportPayload(rawJson) {
     if (!rawJson || typeof rawJson !== "string") {
       throw new Error("导入内容不能为空");
@@ -106,6 +153,11 @@ export class ImportExportService {
     return { history, preferences, theme };
   }
 
+  /**
+   * 清理历史记录数据
+   * @param {*} rawHistory - 原始历史记录数据
+   * @returns {HistoryItem[]|null} 清理后的历史记录数据或null
+   */
   sanitizeHistory(rawHistory) {
     if (typeof rawHistory === "undefined") return null;
     if (!Array.isArray(rawHistory)) {
@@ -138,6 +190,11 @@ export class ImportExportService {
     return normalized.slice(0, limit);
   }
 
+  /**
+   * 清理偏好设置数据
+   * @param {*} rawPrefs - 原始偏好设置数据
+   * @returns {Object|null} 清理后的偏好设置数据或null
+   */
   sanitizePreferences(rawPrefs) {
     if (typeof rawPrefs === "undefined") return null;
     if (!rawPrefs || typeof rawPrefs !== "object" || Array.isArray(rawPrefs)) {
@@ -164,6 +221,11 @@ export class ImportExportService {
     return Object.keys(sanitized).length ? sanitized : null;
   }
 
+  /**
+   * 清理主题数据
+   * @param {*} rawTheme - 原始主题数据
+   * @returns {string|null} 清理后的主题数据或null
+   */
   sanitizeTheme(rawTheme) {
     if (typeof rawTheme === "undefined" || rawTheme === null) return null;
     if (rawTheme === THEMES.LIGHT || rawTheme === THEMES.DARK || rawTheme === THEMES.AUTO) {
@@ -172,6 +234,10 @@ export class ImportExportService {
     throw new Error("theme 字段必须是 light/dark/auto 之一");
   }
 
+  /**
+   * 获取历史记录限制数
+   * @returns {number} 历史记录限制数
+   */
   getHistoryLimit() {
     const preferenceLimit = this.preferencesManager
       ? this.preferencesManager.get().maxHistory || DEFAULT_PREFERENCES.maxHistory

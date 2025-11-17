@@ -2,11 +2,25 @@
 
 import { Decimal } from "../core/decimal-config.js";
 
+/**
+ * 数学常量
+ * @type {Object}
+ * @property {Decimal} PI - 圆周率
+ * @property {Decimal} E - 自然常数
+ */
 export const MATH_CONSTANTS = {
   PI: new Decimal("3.1415926535897932384626433832795029"),
   E: new Decimal("2.7182818284590452353602874713526625"),
 };
 
+/**
+ * 默认偏好设置
+ * @type {Object}
+ * @property {string} angleUnit - 角度单位（deg、rad 或 grad）
+ * @property {number} precision - 精度
+ * @property {number} maxHistory - 最大历史记录数
+ * @property {string} mode - 模式（standard | scientific）
+ */
 export const DEFAULT_PREFERENCES = {
   angleUnit: "deg", // 角度单位：deg、rad 或 grad
   precision: 28,
@@ -14,18 +28,36 @@ export const DEFAULT_PREFERENCES = {
   mode: "standard", // standard | scientific
 };
 
+/**
+ * 存储键名常量
+ * @type {Object}
+ * @property {string} HISTORY - 历史记录键名
+ * @property {string} PREFERENCES - 偏好设置键名
+ * @property {string} THEME - 主题键名
+ */
 export const STORAGE_KEYS = {
   HISTORY: "calculator.history",
   PREFERENCES: "calculator.preferences",
   THEME: "calculator.theme",
 };
 
+/**
+ * 主题常量
+ * @type {Object}
+ * @property {string} LIGHT - 浅色主题
+ * @property {string} DARK - 深色主题
+ * @property {string} AUTO - 自动主题
+ */
 export const THEMES = {
   LIGHT: "light",
   DARK: "dark",
   AUTO: "auto",
 };
 
+/**
+ * 内存行按钮配置
+ * @type {ButtonConfig[]}
+ */
 const MEMORY_ROW = [
   { type: "memory", label: "MC", value: "memory-clear" },
   { type: "memory", label: "MR", value: "memory-recall" },
@@ -34,6 +66,10 @@ const MEMORY_ROW = [
   { type: "memory", label: "MS", value: "memory-store" },
 ];
 
+/**
+ * 标准模式按钮布局
+ * @type {Array}
+ */
 const STANDARD_LAYOUT = [
   MEMORY_ROW,
   [
@@ -76,6 +112,10 @@ const STANDARD_LAYOUT = [
   ],
 ];
 
+/**
+ * 科学计算器主要功能按钮布局
+ * @type {Array}
+ */
 const SCIENTIFIC_PRIMARY = [
   MEMORY_ROW,
   [
@@ -129,6 +169,10 @@ const SCIENTIFIC_PRIMARY = [
   ],
 ];
 
+/**
+ * 科学计算器第二功能按钮布局
+ * @type {Array}
+ */
 const SCIENTIFIC_SECONDARY = [
   MEMORY_ROW,
   [
@@ -182,9 +226,17 @@ const SCIENTIFIC_SECONDARY = [
   ],
 ];
 
+/**
+ * 按钮布局配置
+ * @type {Object.<string, Array|Function>}
+ */
 export const BUTTON_LAYOUTS = {
   standard: STANDARD_LAYOUT,
   scientific: ({ secondMode } = {}) => (secondMode ? SCIENTIFIC_SECONDARY : SCIENTIFIC_PRIMARY),
 };
 
+/**
+ * 默认模式
+ * @type {string}
+ */
 export const DEFAULT_MODE = "standard";
