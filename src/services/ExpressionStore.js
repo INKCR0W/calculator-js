@@ -4,7 +4,21 @@ import { Decimal } from "../core/decimal-config.js";
 import { formatExpression } from "../utils/formatters.js";
 import { isValidExpression } from "../utils/validators.js";
 
+/**
+ * ExpressionStore类 - 表达式与内存状态管理
+ * 
+ * @class ExpressionStore
+ * @property {Calculator} calculator - 计算器实例
+ * @property {string} expression - 当前表达式
+ * @property {Decimal|null} lastResultValue - 上次计算结果
+ * @property {Decimal|null} memoryValue - 内存值
+ */
 export class ExpressionStore {
+  /**
+   * 创建ExpressionStore实例
+   * @param {Object} [options] - 配置选项
+   * @param {Calculator} [options.calculator] - 计算器实例
+   */
   constructor({ calculator } = {}) {
     this.calculator = calculator;
     this.expression = "";
@@ -12,30 +26,56 @@ export class ExpressionStore {
     this.memoryValue = null;
   }
 
+  /**
+   * 获取当前表达式
+   * @returns {string} 当前表达式
+   */
   getExpression() {
     return this.expression;
   }
 
+  /**
+   * 设置表达式
+   * @param {string} value - 表达式值
+   * @returns {void}
+   */
   setExpression(value) {
     this.expression = String(value || "");
     this.lastResultValue = null;
   }
 
+  /**
+   * 追加内容到表达式
+   * @param {string} token - 要追加的内容
+   * @returns {void}
+   */
   append(token) {
     this._resetLastResult();
     this.expression += token;
   }
 
+  /**
+   * 删除表达式最后一个字符
+   * @returns {void}
+   */
   deleteLast() {
     this._resetLastResult();
     this.expression = this.expression.slice(0, -1);
   }
 
+  /**
+   * 清除整个表达式
+   * @returns {void}
+   */
   clearExpression() {
     this.expression = "";
     this._resetLastResult();
   }
 
+  /**
+   * 清除当前输入项
+   * @returns {void}
+   */
   clearEntry() {
     this._resetLastResult();
     const bounds = this._getLastEntryBounds();
@@ -46,6 +86,10 @@ export class ExpressionStore {
     this.expression = this.expression.slice(0, bounds.start);
   }
 
+  /**
+   * 切换最后数字的符号
+   * @returns {boolean} 是否成功切换
+   */
   toggleLastNumberSign() {
     this._resetLastResult();
     const bounds = this._getLastEntryBounds();
@@ -57,6 +101,10 @@ export class ExpressionStore {
     return true;
   }
 
+  /**
+   * 应用百分比转换
+   * @returns {Object} 操作结果
+   */
   applyPercent() {
     const bounds = this._getLastEntryBounds();
     if (!bounds) {
@@ -101,6 +149,10 @@ export class ExpressionStore {
     return { ok: true, expression: this.expression };
   }
 
+  /**
+   * 获取当前输入项的Decimal值
+   * @returns {Decimal|null} Decimal值或null
+   */
   getCurrentEntryDecimal() {
     if (this.lastResultValue instanceof Decimal) {
       return this.lastResultValue;
@@ -121,6 +173,11 @@ export class ExpressionStore {
     return null;
   }
 
+  /**
+   * 设置上次计算结果
+   * @param {Decimal|number} value - 结果值
+   * @returns {void}
+   */
   setLastResult(value) {
     if (value instanceof Decimal) {
       this.lastResultValue = value;
@@ -131,10 +188,19 @@ export class ExpressionStore {
     }
   }
 
+  /**
+   * 获取上次计算结果
+   * @returns {Decimal|null} 上次计算结果
+   */
   getLastResult() {
     return this.lastResultValue;
   }
 
+  /**
+   * 处理内存操作
+   * @param {string} action - 内存操作类型
+   * @returns {Object} 操作结果
+   */
   handleMemoryAction(action) {
     switch (action) {
       case "memory-clear":
@@ -153,15 +219,28 @@ export class ExpressionStore {
     }
   }
 
+  /**
+   * 获取内存值
+   * @returns {Decimal|null} 内存值
+   */
   getMemoryValue() {
     return this.memoryValue;
   }
 
+  /**
+   * 从历史记录设置表达式
+   * @param {string} expression - 表达式
+   * @returns {void}
+   */
   setExpressionFromHistory(expression) {
     this.expression = String(expression || "");
     this.lastResultValue = null;
   }
 
+  /**
+   * 内存存储操作
+   * @returns {Object} 操作结果
+   */
   _memoryStore() {
     const value = this.getCurrentEntryDecimal();
     if (!value) {
@@ -171,6 +250,10 @@ export class ExpressionStore {
     return { ok: true };
   }
 
+  /**
+   * 内存加法操作
+   * @returns {Object} 操作结果
+   */
   _memoryPlus() {
     const value = this.getCurrentEntryDecimal();
     if (!value) {
@@ -180,6 +263,10 @@ export class ExpressionStore {
     return { ok: true };
   }
 
+  /**
+   * 内存减法操作
+   * @returns {Object} 操作结果
+   */
   _memoryMinus() {
     const value = this.getCurrentEntryDecimal();
     if (!value) {
@@ -189,6 +276,10 @@ export class ExpressionStore {
     return { ok: true };
   }
 
+  /**
+   * 内存调用操作
+   * @returns {Object} 操作结果
+   */
   _memoryRecall() {
     if (!(this.memoryValue instanceof Decimal)) {
       return { ok: false, error: "内存为空" };
@@ -210,6 +301,11 @@ export class ExpressionStore {
     return { ok: true, shouldClearResult };
   }
 
+  /**
+   * 解析Decimal值
+   * @param {string} segment - 字符串片段
+   * @returns {Decimal|null} Decimal值或null
+   */
   _parseDecimal(segment) {
     if (!segment) return null;
     try {
@@ -219,10 +315,18 @@ export class ExpressionStore {
     }
   }
 
+  /**
+   * 重置上次结果
+   * @returns {void}
+   */
   _resetLastResult() {
     this.lastResultValue = null;
   }
 
+  /**
+   * 获取最后输入项的边界位置
+   * @returns {Object|null} 边界位置对象或null
+   */
   _getLastEntryBounds() {
     if (!this.expression) return null;
     let end = this.expression.length - 1;
@@ -252,11 +356,22 @@ export class ExpressionStore {
     return { start, end: end + 1 };
   }
 
+  /**
+   * 替换最后输入项
+   * @param {Object} bounds - 边界位置对象
+   * @param {string} replacement - 替换内容
+   * @returns {void}
+   */
   _replaceLastEntry(bounds, replacement) {
     this._resetLastResult();
     this.expression = `${this.expression.slice(0, bounds.start)}${replacement}${this.expression.slice(bounds.end)}`;
   }
 
+  /**
+   * 查找最后的顶层运算符索引
+   * @param {number} limit - 查找限制位置
+   * @returns {number} 运算符索引或-1
+   */
   _findLastTopLevelOperatorIndex(limit = this.expression.length) {
     let depth = 0;
     for (let i = limit - 1; i >= 0; i -= 1) {
@@ -282,6 +397,11 @@ export class ExpressionStore {
     return -1;
   }
 
+  /**
+   * 提取运算符前的操作数
+   * @param {number} opIndex - 运算符索引
+   * @returns {string|null} 操作数字符串或null
+   */
   _extractOperandBefore(opIndex) {
     if (opIndex <= 0) return null;
     let end = opIndex - 1;

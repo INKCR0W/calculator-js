@@ -4,7 +4,17 @@ import { Decimal } from "./decimal-config.js";
 import { MATH_CONSTANTS, DEFAULT_PREFERENCES } from "../utils/constants.js";
 import { MATH_FUNCTIONS } from "./MathFunctions.js";
 
+/**
+ * Evaluator类 - 负责遍历AST并计算表达式结果
+ * 
+ * @class Evaluator
+ * @property {Object} options - 求值器配置选项
+ */
 export class Evaluator {
+  /**
+   * 创建Evaluator实例
+   * @param {Object} [options={}] - 配置选项
+   */
   constructor(options = {}) {
     this.options = { ...DEFAULT_PREFERENCES, ...options };
     // 配置全局 Decimal 精度：
@@ -19,17 +29,32 @@ export class Evaluator {
     }
   }
 
+  /**
+   * 计算AST节点的值
+   * @param {Object} ast - 抽象语法树根节点
+   * @returns {Decimal} 计算结果
+   */
   evaluate(ast) {
     const value = this.evalNode(ast);
     return this.round(value);
   }
 
+  /**
+   * 对值进行精度舍入
+   * @param {Decimal|number} value - 需要舍入的值
+   * @returns {Decimal} 舍入后的值
+   */
   round(value) {
     const { precision } = this.options;
     const v = value instanceof Decimal ? value : new Decimal(value);
     return v.toSignificantDigits(precision || 28, Decimal.ROUND_HALF_EVEN);
   }
 
+  /**
+   * 递归计算AST节点
+   * @param {Object} node - AST节点
+   * @returns {Decimal} 节点计算结果
+   */
   evalNode(node) {
     switch (node.type) {
       case "Literal":
@@ -48,12 +73,22 @@ export class Evaluator {
     }
   }
 
+  /**
+   * 计算常量节点
+   * @param {Object} node - 常量节点
+   * @returns {Decimal} 常量值
+   */
   evalConstant(node) {
     if (node.name === "pi") return MATH_CONSTANTS.PI;
     if (node.name === "e") return MATH_CONSTANTS.E;
     throw new Error(`未知常量: ${node.name}`);
   }
 
+  /**
+   * 计算二元表达式节点
+   * @param {Object} node - 二元表达式节点
+   * @returns {Decimal} 计算结果
+   */
   evalBinary(node) {
     const left = this.evalNode(node.left);
     const right = this.evalNode(node.right);
@@ -79,6 +114,11 @@ export class Evaluator {
     }
   }
 
+  /**
+   * 计算一元表达式节点
+   * @param {Object} node - 一元表达式节点
+   * @returns {Decimal} 计算结果
+   */
   evalUnary(node) {
     const value = this.evalNode(node.argument);
     const v = value instanceof Decimal ? value : new Decimal(value);
@@ -92,6 +132,11 @@ export class Evaluator {
     }
   }
 
+  /**
+   * 计算函数调用节点
+   * @param {Object} node - 函数调用节点
+   * @returns {Decimal} 计算结果
+   */
   evalCall(node) {
     const fn = MATH_FUNCTIONS[node.callee];
     if (!fn) {
